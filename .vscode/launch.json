@@ -2,6 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
+<<<<<<< HEAD
             "name": "Python",
             "type": "python",
             "request": "launch",
@@ -61,3 +62,6 @@
         }
     ]
 }
+
+
+>>>>>>> cb045671f2ac99ac2be21e26be759b1e016c8da0
