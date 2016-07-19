@@ -11,6 +11,7 @@ class IpData(object):
     def storeSqlite(self):
         print("正在写入")
         IpData.cur.execute("INSERT INTO ipinfo (ip, country) VALUES (?, ?)", (self.ipAddress, self.country))
+        IpData.conn.commit()
     
     '''def storeTxt(self):
         with open("ip.txt","a+") as file:
