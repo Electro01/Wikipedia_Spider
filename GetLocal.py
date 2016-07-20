@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 from urllib.error import HTTPError
 from bs4 import BeautifulSoup
+import DataStorage 
 
 import json
 import datetime
@@ -27,6 +28,10 @@ def getLinks(articleUrl):
 def getHistoryIPs(pageUrl):
     pageUrl = pageUrl.replace("/wiki/", "")
     historyUrl = "http://en.wikipedia.org/w/index.php?title="+pageUrl+"&action=history"
+    DataStorage.UrlData.initSqlite()
+    hisObj = DataStorage.UrlData(historyUrl)
+    hisObj.storeSqlite()
+    DataStorage.UrlData.delSqlite()
     print("history url is: "+historyUrl)
     html = urlopen(historyUrl)
     bsObj = BeautifulSoup(html, "html.parser")

@@ -13,8 +13,15 @@ def showDataNum():
     conn = sqlite3.connect("IP.db")
     cur = conn.cursor()
     maxID = cur.execute("SELECT max(id) FROM ipinfo")
-    dataNum = list(maxID)[0][0]
-    print("The amount of data:",dataNum)
+    ipNum = list(maxID)[0][0]
+    maxID = cur.execute("SELECT max(id) FROM history")
+    urlNum = list(maxID)[0][0]
+
+    print("The amount of URL data:",urlNum)
+    print("The amount of IP data:",ipNum)
+    
+
+
 
 def DataStoragetest():
     IpData.initSqlite()
