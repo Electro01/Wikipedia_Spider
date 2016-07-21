@@ -36,7 +36,6 @@ def getHistoryIPs(pageUrl):
     html = urlopen(historyUrl)
     bsObj = BeautifulSoup(html, "html.parser")
     #bsObj = BeautifulSoup(html, "lxml")
-    #finds only the links with class "mw-anonuserlink" which has IP addresses instead of usernames
     ipAddresses = bsObj.findAll("a", {"class":"mw-anonuserlink"})
     addressList = set()
     for ipAddress in ipAddresses:

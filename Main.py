@@ -3,7 +3,7 @@ from GetLocal import *
 
 
 # 设置起始页面
-links = getLinks("/wiki/Unix") 
+links = getLinks("/wiki/Linux") 
 
 def main():
     global links
