@@ -1,7 +1,8 @@
 import sqlite3
 
-def showIpData():
-    conn = sqlite3.connect("IP.db")
+# 查看数据库中ipinfo表的信息
+def showIpInfo():
+    conn = sqlite3.connect("wikidata.db")
     cur = conn.cursor()
     List = cur.execute("SELECT * FROM ipinfo")
     for data in List.fetchall():
@@ -9,31 +10,29 @@ def showIpData():
     cur.close()
     conn.close()
 
+# 查看数据库中pages表的信息
+def showPages():
+    conn = sqlite3.connect("wikidata.db")
+    cur = conn.cursor()
+    List = cur.execute("SELECT * FROM pages")
+    for data in List.fetchall():
+        print(data)
+    cur.close()
+    conn.close()
+
+# 查询pages页和ipinfo页的记录数
 def showDataNum():
-    conn = sqlite3.connect("IP.db")
+    conn = sqlite3.connect("wikidata.db")
     cur = conn.cursor()
     maxID = cur.execute("SELECT max(id) FROM ipinfo")
     ipNum = list(maxID)[0][0]
-    maxID = cur.execute("SELECT max(id) FROM history")
+    maxID = cur.execute("SELECT max(id) FROM pages")
     urlNum = list(maxID)[0][0]
 
-    print("The amount of URL data:",urlNum)
+    print("The amount of pages data:",urlNum)
     print("The amount of IP data:",ipNum)
     
-
-
-
-def DataStoragetest():
-    IpData.initSqlite()
-    a = IpData('12123','US')
-    b = IpData('12123d','U2S')
-    a.storeSqlite()
-    b.storeSqlite()
-    IpData.delSqlite()
-    print("SUCCESS")
-
-
-
 if __name__ == '__main__':
+    showPages()
     #showIpData()
-    showDataNum()
+    #showDataNum()
