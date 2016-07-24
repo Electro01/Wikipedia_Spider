@@ -9,37 +9,38 @@ import random
 import re
 import lxml
 
+# 判断一个IP的所在地
 def getCountry(ipAddress):
     try:
         response = urlopen("http://freegeoip.net/json/"+ipAddress).read().decode('utf-8')
     except HTTPError:
         return None
     responseJson = json.loads(response)
-    return responseJson.get("country_code")
+    return responseJson.get("country_code") # 返回国家代号
 
-
+# 从网页中抽取出贡献者的IP
 def getHistoryIPs(pageUrl):
     pageUrl = pageUrl.replace("/wiki/", "")
     historyUrl = "http://en.wikipedia.org/w/index.php?title="+pageUrl+"&action=history"
  
     print("history url:", historyUrl)
     html = urlopen(historyUrl)
-    #bsObj = BeautifulSoup(html, "html.parser")
     bsObj = BeautifulSoup(html, "lxml")
     ipAddresses = bsObj.findAll("a", {"class":"mw-anonuserlink"})
     addressList = set()
     for ipAddress in ipAddresses:
-        print(ipAddress)
+        print(ipAddress.get_text())
         addressList.add(ipAddress.get_text())
     return addressList #返回一个IP列表
 
-
+# 得到所有IP的国家代号
 def getIPinfo(ipList):
     IpDict = dict()
     for ipAddress in ipList:
         IpDict[ipAddress] = getCountry(ipAddress)
     return IpDict
 
+# 储存IP信息
 def storeIPinfo(objList):
     conn = sqlite3.connect("wikidata.db")
     cur = conn.cursor()

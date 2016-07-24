@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import lxml
 import sqlite3
 
+# 分析HTML得到标题和摘要
 def getAbst(articleUrl):
     html = urlopen("http://en.wikipedia.org"+articleUrl)
     bsObj = BeautifulSoup(html, "lxml")
@@ -10,8 +11,8 @@ def getAbst(articleUrl):
     content = bsObj.find("div", {"id":"mw-content-text"}).find("p").get_text()
     print("Title:", title)   
     return (title, content)
-#bsObj.find("div", {"id":"bodyContent"}).findAll("a", href=re.compile("^(/wiki/)((?!:).)*$"))
 
+# 储存标题和摘要
 def storeAbst(link):
     conn = sqlite3.connect("wikidata.db")
     cur = conn.cursor()

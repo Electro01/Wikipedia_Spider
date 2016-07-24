@@ -9,10 +9,12 @@ import datetime
 import re
 import lxml
 import threading, queue
+import time
 
 # 初始化随机数种子
 random.seed(datetime.datetime.now())
 
+# 分析网站的源码并返回外链
 def getLinks(articleUrl):
     try:
         html = urlopen("http://en.wikipedia.org"+articleUrl)
@@ -29,37 +31,36 @@ newLink = '/wiki/Kevin_Bacon'
 # 设置缓冲队列
 links_queue = queue.Queue(50000)
 
-
+# 抓取摘要
 def crawlAbs():
     global links, newLink, links_queue
     while(len(links) > 0):
-        GetAbstract.storeAbst(newLink)
         links_queue.put(newLink)
+        GetAbstract.storeAbst(newLink)
         #GetLocal.storeIPinfo(links)
         newLink = links[random.randint(0, len(links)-1)].attrs["href"]
         links = getLinks(newLink)
 
+# 抓取IP
 def crawlIP():
     global links_queue
     while True:
-        linkUrl = links_queue.get()
+        linkUrl =  links_queue.get()  
         linkObj = getLinks(linkUrl)
         GetLocal.storeIPinfo(linkObj)
 
-def run():
+#运行
+def run_spider():
     global links_queue
-    print("Start!")
+    # 设置一个线程用来抓取摘要和Link
     crawlAbs_thread = threading.Thread(target = crawlAbs)
-    crawlIP_thread = threading.Thread(target = crawlIP)
     crawlAbs_thread.start()
-    crawlIP_thread.start()
+    # 第二个线程用来从队列中提取Link并抓取
+    crawlIP()
+
     links_queue.join()
 
 
-
 if __name__ == '__main__':
-    #run()
-    links_queue.put('Kevin_Bacon')
-    links_queue.put('Ed Harris')
-    crawlIP()
-    #crawlAbs()
+    print("Start!\n-----------------------------")
+    run_spider()
