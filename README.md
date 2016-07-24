@@ -1,2 +1,17 @@
-# Wikipedia_Spider
-基于Python的网络爬虫应用。
+# Wikipedia Spider
+基于Python的Wikipedia爬虫。 可以爬取维基百科每个词条的标题和摘要，记录下词条贡献者的IP，用API查出贡献者的国家，最后将以上数据存入Sqlite数据库，便于进行数据分析。
+## 模块说明  
+***********************
+
+## 数据挖掘模块
+* `GetAbstract.py` ：摘要抓取模块，用于抓取词条的标题和摘要。
+* `GetLocal.py`  ：IP爬取和分析模块，用于爬取词条的贡献者IP并分析出贡献者所在的国家。
+* `Coordinate.py` ： 爬虫的入口，用于设置起始网页和运行爬虫。
+* `manage.py`  ：管理模块，用于查看爬取进度和数据库的数据量。
+
+## 数据分析模块
+* `Analysis.py`  ：用于对数据库中的数据进行数据分析，暂未编写。  
+
+## 原理  
+*******************
+运行`Coordinate.py`，Python将创建两个线程，第一个线程获取起始页的HTML代码并转化为BeautifulSoup对象，从中获取标题和摘要，存入数据库，并将标题作为link放入缓冲队列`links_queue`中，同时提取出一个随机内链，作为下一次循环的起始页，开始下一次循环；同时第二个线程不断地从缓冲队列`links_queue`中获取link将其转化为BeautifulSoup对象，从而从中提取出贡献者的IP，然后调用*freegeoip*的API查询IP的归属地，最后将IP和其归属地存入数据库。

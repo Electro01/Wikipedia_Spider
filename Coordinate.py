@@ -14,7 +14,7 @@ import time
 # 初始化随机数种子
 random.seed(datetime.datetime.now())
 
-# 分析网站的源码并返回外链
+# 分析网站的源码并返回内链
 def getLinks(articleUrl):
     try:
         html = urlopen("http://en.wikipedia.org"+articleUrl)
