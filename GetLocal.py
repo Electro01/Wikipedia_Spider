@@ -8,6 +8,7 @@ import datetime
 import random
 import re
 import lxml
+import time
 
 # 判断一个IP的所在地
 def getCountry(ipAddress):
@@ -15,6 +16,10 @@ def getCountry(ipAddress):
         response = urlopen("http://freegeoip.net/json/"+ipAddress).read().decode('utf-8')
     except HTTPError:
         return None
+    except URLError:
+        print("Sleeping!")
+        time.sleep(20)
+        response = urlopen("http://freegeoip.net/json/"+ipAddress).read().decode('utf-8')
     responseJson = json.loads(response)
     return responseJson.get("country_code") # 返回国家代号
 

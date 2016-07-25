@@ -20,12 +20,16 @@ def getLinks(articleUrl):
         html = urlopen("http://en.wikipedia.org"+articleUrl)
     except HTTPError:
         return None
+    except URLError:
+        print("Sleeping!")
+        time.sleep(20)
+        html = urlopen("http://en.wikipedia.org"+articleUrl)
     bsObj = BeautifulSoup(html, "lxml")
     return bsObj.find("div", {"id":"bodyContent"}).findAll("a", href=re.compile("^(/wiki/)((?!:).)*$"))
 
 # 设置起始页面
-links = getLinks("/wiki/Kevin_Bacon") 
-newLink = '/wiki/Kevin_Bacon'
+links = getLinks("/wiki/unix") 
+newLink = '/wiki/unix'
 
 
 # 设置缓冲队列
