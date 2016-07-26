@@ -2,7 +2,15 @@
 '''
 用于设置常用参数
 '''
-NUMBER_OF_THREADS = 3
-START_PAGE = '/wiki/python'
-URLERROR_SLEEP_TIME = 20
-SLEEP_TIME = 1
+
+# 爬取IP使用的线程数
+NUMBER_OF_THREADS = 4
+
+# 起始页
+START_PAGE = '/wiki/Burgalays'
+
+# 遇到URLError时的休眠时间
+URLERROR_SLEEP_TIME = 40
+
+#爬取每个网页的休眠时间
+SLEEP_TIME = 3

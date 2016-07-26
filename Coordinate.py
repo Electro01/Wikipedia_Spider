@@ -1,8 +1,8 @@
 from urllib.request import urlopen
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from bs4 import BeautifulSoup
+from settings import URLERROR_SLEEP_TIME, START_PAGE, NUMBER_OF_THREADS
 
-import settings
 import GetLocal 
 import GetAbstract
 import random
@@ -23,18 +23,18 @@ def getLinks(articleUrl):
         return None
     except URLError:
         print("Sleeping!")
-        time.sleep(settings.URLERROR_SLEEP_TIME)
+        time.sleep(URLERROR_SLEEP_TIME)
         html = urlopen("http://en.wikipedia.org"+articleUrl)
     bsObj = BeautifulSoup(html, "lxml")
     return bsObj.find("div", {"id":"bodyContent"}).findAll("a", href=re.compile("^(/wiki/)((?!:).)*$"))
 
-# 设置起始页面
-links = getLinks(settings.START_PAGE) 
-newLink = settings.START_PAGE
+# 设置页面
+links = getLinks(START_PAGE) 
+newLink = START_PAGE
 
 
 # 设置缓冲队列
-links_queue = queue.Queue(50000) 
+links_queue = queue.Queue() 
 
 # 抓取摘要
 def crawlAbs():
@@ -53,34 +53,21 @@ def crawlIP():
         linkObj = getLinks(linkUrl)
         GetLocal.storeIPinfo(linkObj)
 
-#运行
-def run_spider():
-    global links_queue
-    # 设置一个线程用来抓取摘要和Link
-    crawlAbs_thread = threading.Thread(target = crawlAbs)
-    crawlAbs_thread.start()
-    # 第二个线程用来从队列中提取Link并抓取
-    crawlIP()
 
-    links_queue.join()
-
-def run_test():
+def run_spider(threadNum):
     global links_queue
     
     threads = []
-    for i in range(settings.NUMBER_OF_THREADS):
+    for i in range(threadNum):
         crawlIP_thread = threading.Thread(target = crawlIP)
         threads.append(crawlIP_thread)
-    
     for thread in threads:
         thread.start()
-    crawlAbs()
 
-    for thread in threads:
-        thread.join()
+    crawlAbs()
+    links_queue.join()
 
 
 if __name__ == '__main__':
     print("Start!\n-----------------------------")
-    run_test()
-    #run_spider()
+    run_spider(NUMBER_OF_THREADS)
