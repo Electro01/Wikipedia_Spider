@@ -33,6 +33,6 @@ def showDataNum():
     print("The amount of IP data:",ipNum)
     
 if __name__ == '__main__':
-    showPages()
+    #showPages()
     #showIpData()
-    #showDataNum()
+    showDataNum()

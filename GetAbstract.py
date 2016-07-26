@@ -1,11 +1,20 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+
+import time
 import lxml
 import sqlite3
+import settings
 
 # 分析HTML得到标题和摘要
 def getAbst(articleUrl):
-    html = urlopen("http://en.wikipedia.org"+articleUrl)
+    time.sleep(settings.SLEEP_TIME)
+    try:
+        html = urlopen("http://en.wikipedia.org"+articleUrl)
+    except:
+        print("Sleeping!")
+        time.sleep(settings.URLERROR_SLEEP_TIME)
+        html = urlopen("http://en.wikipedia.org"+articleUrl)
     bsObj = BeautifulSoup(html, "lxml")
     title = bsObj.find("h1").get_text()
     content = bsObj.find("div", {"id":"mw-content-text"}).find("p").get_text()

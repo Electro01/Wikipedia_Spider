@@ -2,6 +2,7 @@ from urllib.request import urlopen
 from urllib.error import HTTPError
 from bs4 import BeautifulSoup
 
+import settings
 import sqlite3
 import json
 import datetime
@@ -18,7 +19,7 @@ def getCountry(ipAddress):
         return None
     except URLError:
         print("Sleeping!")
-        time.sleep(20)
+        time.sleep(settings.URLERROR_SLEEP_TIME)
         response = urlopen("http://freegeoip.net/json/"+ipAddress).read().decode('utf-8')
     responseJson = json.loads(response)
     return responseJson.get("country_code") # 返回国家代号
@@ -29,7 +30,15 @@ def getHistoryIPs(pageUrl):
     historyUrl = "http://en.wikipedia.org/w/index.php?title="+pageUrl+"&action=history"
  
     print("history url:", historyUrl)
-    html = urlopen(historyUrl)
+    time.sleep(settings.SLEEP_TIME)
+    try:
+        html = urlopen(historyUrl)
+    except HTTPError:
+        return None
+    except URLError:
+        print("Sleeping!")
+        time.sleep(settings.URLERROR_SLEEP_TIME)
+        html = urlopen(historyUrl)
     bsObj = BeautifulSoup(html, "lxml")
     ipAddresses = bsObj.findAll("a", {"class":"mw-anonuserlink"})
     addressList = set()

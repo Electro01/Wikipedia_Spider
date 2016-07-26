@@ -1,0 +1,8 @@
+
+'''
+用于设置常用参数
+'''
+NUMBER_OF_THREADS = 3
+START_PAGE = '/wiki/python'
+URLERROR_SLEEP_TIME = 20
+SLEEP_TIME = 1
