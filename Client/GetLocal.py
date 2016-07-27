@@ -57,6 +57,9 @@ def getIPinfo(ipList):
         countrys.append(country)
     return (ipList, countrys)
 
+'''
+为了调试方便，这里使用的是Sqlite数据库，但是对于一个真正的分布式系统来说，应该使用MongoDB或者Mysql。
+'''
 # 储存IP信息
 def storeIPinfo(objList):
     conn = sqlite3.connect("wikidata.db")
