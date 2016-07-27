@@ -28,17 +28,16 @@ def getLinks(articleUrl):
     bsObj = BeautifulSoup(html, "lxml")
     return bsObj.find("div", {"id":"bodyContent"}).findAll("a", href=re.compile("^(/wiki/)((?!:).)*$"))
 
-# 设置页面
-links = getLinks(START_PAGE) 
-newLink = START_PAGE
-
 
 # 设置缓冲队列
 links_queue = queue.Queue() 
 
 # 抓取摘要
 def crawlAbs():
-    global links, newLink, links_queue
+    global links_queue
+    # 设置页面
+    links = getLinks(START_PAGE) 
+    newLink = START_PAGE
     while(len(links) > 0):
         links_queue.put(newLink)
         GetAbstract.storeAbst(newLink)
@@ -46,23 +45,19 @@ def crawlAbs():
         links = getLinks(newLink)
 
 # 抓取IP
-def crawlIP():
+def crawlIP(threadName):
     global links_queue
     while True:
         linkUrl =  links_queue.get()  
         linkObj = getLinks(linkUrl)
-        GetLocal.storeIPinfo(linkObj)
+        GetLocal.storeIPinfo(linkObj, threadName)
 
 
 def run_spider(threadNum):
-    global links_queue
     
-    threads = []
     for i in range(threadNum):
-        crawlIP_thread = threading.Thread(target = crawlIP)
-        threads.append(crawlIP_thread)
-    for thread in threads:
-        thread.start()
+        crawlIP_thread = threading.Thread(target = crawlIP, args = (i, ))
+        crawlIP_thread.start()
 
     crawlAbs()
     links_queue.join()
