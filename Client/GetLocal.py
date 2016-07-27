@@ -58,14 +58,13 @@ def getIPinfo(ipList):
     return (ipList, countrys)
 
 # 储存IP信息
-def storeIPinfo(objList, threadName):
+def storeIPinfo(objList):
     conn = sqlite3.connect("wikidata.db")
     cur = conn.cursor()
     cur.execute('''CREATE TABLE IF NOT EXISTS ipinfo (id INTEGER PRIMARY KEY AUTOINCREMENT, ip varchar(200), country varchar(200))''')
 
     for bsObj in objList:
         pageUrl = bsObj.attrs["href"]
-        print("Thread " + str(threadName) + " -> ", end = '')
         historyIPs = getHistoryIPs(pageUrl)
         ipList, countrys = getIPinfo(historyIPs)
         for ipAddress, country in zip(ipList, countrys):

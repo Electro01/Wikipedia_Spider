@@ -1,16 +1,16 @@
 from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
 from bs4 import BeautifulSoup
-from settings import URLERROR_SLEEP_TIME, START_PAGE, NUMBER_OF_THREADS
+from settings import URLERROR_SLEEP_TIME, START_PAGE, SLEEP_TIME
 
-import GetLocal 
-import GetAbstract
+
 import random
 import datetime
 import re
 import lxml
-import threading, queue
 import time
+import redis
+import ServerLog
 
 # 初始化随机数种子
 random.seed(datetime.datetime.now())
@@ -20,48 +20,36 @@ def getLinks(articleUrl):
     try:
         html = urlopen("http://en.wikipedia.org"+articleUrl)
     except HTTPError:
+        ServerLog.writeLog("HTTPError")
         return None
     except URLError:
+        ServerLog.writeLog("URLError")
         print("Sleeping!")
         time.sleep(URLERROR_SLEEP_TIME)
         html = urlopen("http://en.wikipedia.org"+articleUrl)
     bsObj = BeautifulSoup(html, "lxml")
     return bsObj.find("div", {"id":"bodyContent"}).findAll("a", href=re.compile("^(/wiki/)((?!:).)*$"))
 
+# 设置页面
+links = getLinks(START_PAGE) 
+newLink = START_PAGE
 
-# 设置缓冲队列
-links_queue = queue.Queue() 
+
+# 连接至Redis
+conn = redis.Redis()
 
 # 抓取摘要
-def crawlAbs():
-    global links_queue
-    # 设置页面
-    links = getLinks(START_PAGE) 
-    newLink = START_PAGE
+def RunServer():
+    global conn, links, newLink
     while(len(links) > 0):
-        links_queue.put(newLink)
-        GetAbstract.storeAbst(newLink)
+        print(newLink)
+        conn.rpush("link_queue", newLink.encode('utf-8'))
         newLink = links[random.randint(0, len(links)-1)].attrs["href"]
+        time.sleep(SLEEP_TIME)
         links = getLinks(newLink)
-
-# 抓取IP
-def crawlIP(threadName):
-    global links_queue
-    while True:
-        linkUrl =  links_queue.get()  
-        linkObj = getLinks(linkUrl)
-        GetLocal.storeIPinfo(linkObj, threadName)
-
-
-def run_spider(threadNum):
-    
-    for i in range(threadNum):
-        crawlIP_thread = threading.Thread(target = crawlIP, args = (i, ))
-        crawlIP_thread.start()
-
-    crawlAbs()
 
 
 if __name__ == '__main__':
+    ServerLog.writeLog("Start!")
     print("Start!\n-----------------------------")
-    run_spider(NUMBER_OF_THREADS)
+    RunServer()
