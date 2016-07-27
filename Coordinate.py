@@ -60,7 +60,6 @@ def run_spider(threadNum):
         crawlIP_thread.start()
 
     crawlAbs()
-    links_queue.join()
 
 
 if __name__ == '__main__':

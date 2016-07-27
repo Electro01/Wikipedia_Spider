@@ -7,7 +7,7 @@
 NUMBER_OF_THREADS = 4
 
 # 起始页
-START_PAGE = '/wiki/Burgalays'
+START_PAGE = '/wiki/python'
 
 # 遇到URLError时的休眠时间
 URLERROR_SLEEP_TIME = 40
