@@ -17,7 +17,7 @@
 *******************
 运行`Coordinate.py`，Python将创建N+1个线程，主线程负责获取起始页的HTML代码并转化为BeautifulSoup对象，从中获取标题和摘要，存入数据库，并将标题作为link放入缓冲队列`links_queue`中，同时提取出一个随机内链，作为下一次循环的起始页，开始下一次循环；同时其他N个线程不断地从缓冲队列`links_queue`中获取link将其转化为BeautifulSoup对象，从而从中提取出贡献者的IP，然后调用*freegeoip*的API查询IP的归属地，最后将IP和其归属地存入数据库。  
 ![image](/Frame Diagram.png)  
-## Tag  
+## Tags  
 * V1.0.0 单机多线程。  
 * V2.0.0(beta) 分布式版本。
 
