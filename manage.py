@@ -1,7 +1,10 @@
 import sqlite3
 
-# 查看数据库中ipinfo表的信息
+
 def showIpInfo():
+    '''
+    查看数据库中ipinfo表的信息
+    '''
     conn = sqlite3.connect("wikidata.db")
     cur = conn.cursor()
     List = cur.execute("SELECT * FROM ipinfo")
@@ -10,8 +13,11 @@ def showIpInfo():
     cur.close()
     conn.close()
 
-# 查看数据库中pages表的信息
+
 def showPages():
+    '''
+    查看数据库中pages表的信息
+    '''
     conn = sqlite3.connect("wikidata.db")
     cur = conn.cursor()
     List = cur.execute("SELECT * FROM pages")
@@ -20,8 +26,11 @@ def showPages():
     cur.close()
     conn.close()
 
-# 查询pages页和ipinfo页的记录数
+
 def showDataNum():
+    '''
+    查询pages页和ipinfo页的记录数
+    '''
     conn = sqlite3.connect("wikidata.db")
     cur = conn.cursor()
     maxID = cur.execute("SELECT max(id) FROM ipinfo")
@@ -29,10 +38,10 @@ def showDataNum():
     maxID = cur.execute("SELECT max(id) FROM pages")
     urlNum = list(maxID)[0][0]
 
-    print("The amount of pages data:",urlNum)
-    print("The amount of IP data:",ipNum)
-    
+    print("The amount of pages data:", urlNum)
+    print("The amount of IP data:", ipNum)
+
 if __name__ == '__main__':
-    #showPages()
-    #showIpData()
+    # showPages()
+    # showIpData()
     showDataNum()

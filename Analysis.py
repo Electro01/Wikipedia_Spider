@@ -15,7 +15,7 @@ for data in dataSet:
 for data in dataSet:
     ipdict[data[2]] += 1
 
-#print(ipdict)
+# print(ipdict)
 sub = []
 
 country = list(ipdict.keys())
