@@ -56,7 +56,6 @@ def crawlIP(threadName):
     '''
     抓取IP
     '''
-
     global links_queue
     while True:
         linkUrl = links_queue.get()
