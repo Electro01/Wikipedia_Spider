@@ -1,5 +1,6 @@
 # 数据分析模块，暂未编写。
 import matplotlib.pyplot as plt
+import numpy as np
 import sqlite3
 
 ipdict = dict()
@@ -16,12 +17,19 @@ for data in dataSet:
     ipdict[data[2]] += 1
 
 # print(ipdict)
-sub = []
+count = []
 
 country = list(ipdict.keys())
 for i in country:
-    sub.append(ipdict[i])
+    count.append(ipdict[i])
 
-ht = [i for i in range(len(sub))]
-plt.bar(ht, sub)
+y_pos = np.arange(len(country))
+plt.barh(y_pos, count, align='center', alpha=0.4)
+plt.yticks(y_pos, country)
+for count, y_pos in zip(count, y_pos):
+    plt.text(count, y_pos, count,  horizontalalignment='center', verticalalignment='center', weight='bold') 
+plt.subplots_adjust(bottom = 0, top = 2) 
+plt.ylim(len(country), 0)
+plt.ylabel('country')
+plt.xlabel('count')
 plt.show()
